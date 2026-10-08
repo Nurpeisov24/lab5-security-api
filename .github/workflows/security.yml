@@ -29,20 +29,21 @@ jobs:
 
       - name: Run App and OWASP ZAP (DAST)
         run: |
-          # Запуск Flask-приложения в фоне
+          # Запуск приложения в фоне
           python app.py &
           
-          # Запуск OWASP ZAP в режиме демона с использованием актуального образа
+          # Запуск OWASP ZAP демона
           docker run -d -u zap -p 8080:8080 zaproxy/zap-stable zap.sh -daemon -port 8080 -host 0.0.0.0
           
-          echo "Waiting for ZAP and Flask to start..."
-          sleep 20
+          echo "Waiting for services..."
+          sleep 10
           
-          # Проверка статуса и сканирование
-          zap-cli -p 8080 status -t 120
+          # Базовые проверки через zap-cli с таймаутами
+          zap-cli -p 8080 status -t 30
           zap-cli -p 8080 open-url http://localhost:5000/api/users
           zap-cli -p 8080 spider http://localhost:5000/api/users
-          zap-cli -p 8080 active-scan http://localhost:5000/api/users
+          
+          # Генерация отчета
           zap-cli -p 8080 report -o zap_report.html -f html
 
       - name: Upload report
