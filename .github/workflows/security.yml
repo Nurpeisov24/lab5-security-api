@@ -26,7 +26,7 @@ jobs:
 
       - name: Run ZAP (DAST)
         run: |
-          docker run -u zap -p 8080:8080 -d owasp/zap2docker-stable zap.sh -daemon -port 8080 -host 0.0.0.0
+         docker run -u zap -p 8080:8080 -d zaproxy/zap-stable zap.sh -daemon -port 8080 -host 0.0.0.0
           sleep 15
           pip install zapcli
           
